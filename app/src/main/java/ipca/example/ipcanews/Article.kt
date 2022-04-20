@@ -1,6 +1,9 @@
 package ipca.example.ipcanews
 
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class Article  (
@@ -17,7 +20,7 @@ class Article  (
         jsonObject.put("description",description)
         jsonObject.put("url"        ,url        )
         jsonObject.put("urlToImage" ,urlToImage )
-        //jsonObject.put("Date",publishedAt)
+        jsonObject.put("publishedAt",publishedAt?.toStrServer())
         return jsonObject
     }
 
@@ -29,7 +32,7 @@ class Article  (
                 jsonObject["description"] as? String?,
                 jsonObject["url"        ] as String,
                 jsonObject["urlToImage" ] as? String?,
-                null
+                (jsonObject["publishedAt" ] as? String?)?.toDate()
             )
         }
     }

@@ -52,9 +52,12 @@ class MainActivity : AppCompatActivity() {
 
             val textViewTitle = rootView.findViewById<TextView>(R.id.textViewTitle)
             val textViewDescription = rootView.findViewById<TextView>(R.id.textViewDescription)
+            val textViewDate = rootView.findViewById<TextView>(R.id.textViewDate)
+
             val imageViewPhoto = rootView.findViewById<ImageView>(R.id.imageViewPhoto)
             textViewTitle.text = articles[position].title
             textViewDescription.text = articles[position].description
+            textViewDate.text = articles[position].publishedAt?.toStrAAMMDD()
 
             articles[position].urlToImage?.let { url ->
                 Backend.getImage(url){ bitmap ->

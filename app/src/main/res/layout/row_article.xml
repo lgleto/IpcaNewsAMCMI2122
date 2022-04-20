@@ -36,4 +36,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/ic_launcher_foreground" />
+
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/imageViewPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/textViewDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

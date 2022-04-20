@@ -1,7 +1,13 @@
 package ipca.example.ipcanews
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
+import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -18,34 +24,51 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        GlobalScope.launch (Dispatchers.IO) {
-            val client = OkHttpClient()
-            val request = Request.Builder()
-                .url("https://newsapi.org/v2/top-headlines?country=pt&category=sports&apiKey=1765f87e4ebc40229e80fd0f75b6416c")
-                .build()
-            client.newCall(request).execute().use { response ->
-                var result = response.body!!.string()
-                var resultJson = JSONObject(result)
-                if (resultJson.has("status")){
-                    if (resultJson.getString("status") == "ok"){
-                        var articlesJSArray = resultJson.getJSONArray("articles")
-                        for (index in 0 until articlesJSArray.length()){
-                            var articleJSON  = articlesJSArray[index] as JSONObject
-                            var article = Article.fromJSON(articleJSON)
-                            articles.add(article)
-                        }
+        val listViewArticles = findViewById<ListView>(R.id.listViewArticles)
+        val articlesAdapter = ArticlesAdapter()
+        listViewArticles.adapter = articlesAdapter
 
-                        GlobalScope.launch (Dispatchers.Main){
-                            var strArticles = ""
-                            for (a in articles){
-                                strArticles += a.title + "\n"
+        Backend.getTopHeadLinesArticles("sports"){
+            articles = it as ArrayList<Article>
+            articlesAdapter.notifyDataSetChanged()
+        }
+    }
 
-                            }
-                            findViewById<TextView>(R.id.textViewHello).text = strArticles
-                        }
-                    }
+    inner class ArticlesAdapter : BaseAdapter(){
+        override fun getCount(): Int {
+            return articles.size
+        }
+
+        override fun getItem(position: Int): Any {
+            return articles[position]
+        }
+
+        override fun getItemId(position: Int): Long {
+            return 0
+        }
+
+        override fun getView(position: Int, view: View?, viewGroup: ViewGroup?): View {
+            val rootView = layoutInflater.inflate(R.layout.row_article,viewGroup,false)
+
+            val textViewTitle = rootView.findViewById<TextView>(R.id.textViewTitle)
+            val textViewDescription = rootView.findViewById<TextView>(R.id.textViewDescription)
+            val imageViewPhoto = rootView.findViewById<ImageView>(R.id.imageViewPhoto)
+            textViewTitle.text = articles[position].title
+            textViewDescription.text = articles[position].description
+
+            articles[position].urlToImage?.let { url ->
+                Backend.getImage(url){ bitmap ->
+                    imageViewPhoto.setImageBitmap(bitmap)
                 }
             }
+
+            rootView.setOnClickListener {
+                val intent = Intent(this@MainActivity, ArticleDetailActivity::class.java)
+                intent.putExtra(ArticleDetailActivity.ARTICLE_JSON, articles[position].toJSON().toString())
+                startActivity(intent)
+            }
+
+            return rootView
         }
     }
 

@@ -14,10 +14,12 @@ import java.io.InputStream
 object Backend {
 
     const val BASE_URI = "https://newsapi.org/v2/"
-    const val PATH_HEADLINES = "top-headlines?country=pt&category="
+    const val PATH_HEADLINES = "top-headlines?"
+    const val PATH_COUNTRY = "country="
+    const val PATH_CATEGORY = "&category="
     const val API_KEY = "&apiKey=1765f87e4ebc40229e80fd0f75b6416c"
 
-    fun getTopHeadLinesArticles( category: String, callback : (( List<Article>)->Unit) ) {
+    fun getTopHeadLinesArticles( category: String, country: String, callback : (( List<Article>)->Unit) ) {
         var  articles = arrayListOf<Article>()
         GlobalScope.launch (Dispatchers.IO) {
             val client = OkHttpClient()
@@ -25,7 +27,8 @@ object Backend {
                 .url(
                     BASE_URI +
                             PATH_HEADLINES +
-                            category +
+                            PATH_COUNTRY + country +
+                            PATH_CATEGORY + category +
                             API_KEY)
                 .build()
             client.newCall(request).execute().use { response ->

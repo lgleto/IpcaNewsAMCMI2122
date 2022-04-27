@@ -1,40 +1,39 @@
 package ipca.example.ipcanews
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Vibrator
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import org.json.JSONObject
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+
 
 class MainActivity : AppCompatActivity() {
 
     var  articles = arrayListOf<Article>()
+    private var myVib: Vibrator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        myVib = this.getSystemService(VIBRATOR_SERVICE) as Vibrator
 
         val listViewArticles = findViewById<ListView>(R.id.listViewArticles)
         val articlesAdapter = ArticlesAdapter()
         listViewArticles.adapter = articlesAdapter
 
-        Backend.getTopHeadLinesArticles("sports"){
+        Backend.getTopHeadLinesArticles("sports", getString(R.string.country)){
             articles = it as ArrayList<Article>
             articlesAdapter.notifyDataSetChanged()
         }
     }
 
-    inner class ArticlesAdapter : BaseAdapter(){
+    inner class ArticlesAdapter : BaseAdapter() , View.OnLongClickListener{
         override fun getCount(): Int {
             return articles.size
         }
@@ -65,13 +64,53 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            rootView.tag = position
+
             rootView.setOnClickListener {
                 val intent = Intent(this@MainActivity, ArticleDetailActivity::class.java)
                 intent.putExtra(ArticleDetailActivity.ARTICLE_JSON, articles[position].toJSON().toString())
                 startActivity(intent)
             }
+            rootView.setOnLongClickListener (this)
 
             return rootView
+        }
+
+        override fun onLongClick(view: View?): Boolean {
+            val position = view?.tag as? Int
+            position?.let{
+
+
+                val article = articles[position]
+
+                article.urlToImage?.let { url ->
+                    Backend.getImage(url){ bitmap ->
+
+                        val d: Drawable = BitmapDrawable(resources, bitmap)
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle(article.title)
+                            .setMessage(article.description) // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton(getString(R.string.dismiss),
+                                DialogInterface.OnClickListener { dialog, which ->
+                                    // Continue with delete operation
+                                })
+                            .setIcon(d)
+                            .show()
+                    }
+                }
+
+
+
+
+
+
+
+                //Toast.makeText(this@MainActivity,articles[position].title, Toast.LENGTH_LONG ).show()
+                myVib?.vibrate(50)
+                return true
+            }
+            return false
         }
     }
 

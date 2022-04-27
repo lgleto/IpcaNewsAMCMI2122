@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,6 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.IpcaNews">
+        <activity
+            android:name=".MenuActivity"
+            android:exported="true" >
+
+        </activity>
         <activity
             android:name=".ArticleDetailActivity"
             android:exported="false" />

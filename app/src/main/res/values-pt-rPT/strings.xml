@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IpcaNews</string>
+    <string name="date">Data:</string>
+    <string name="dismiss">dispensar</string>
+    <string name="country">pt</string>
+</resources>

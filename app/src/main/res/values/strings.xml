@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">N4YOU</string>
+    <string name="title_home">Top Headlines</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="date">date</string>
+    <string name="dismiss">dismiss</string>
+    <string name="title_economy">Economy</string>
+    <string name="title_sports">Sports</string>
+</resources>

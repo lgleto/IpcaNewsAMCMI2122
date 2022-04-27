@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="ipca.example.n4you.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_articleDetailFragment"
+            app:destination="@id/articleDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/articleDetailFragment"
+        android:name="ipca.example.n4you.ui.home.ArticleDetailFragment"
+        android:label="Article" >
+        <argument
+            android:name="article_json"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_economy"
+        android:name="ipca.example.n4you.ui.economy.EconomyFragment"
+        android:label="Economy" >
+        <action
+            android:id="@+id/action_economyFragment_to_articleDetailFragment"
+            app:destination="@id/articleDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_sports"
+        android:name="ipca.example.n4you.ui.economy.SportsFragment"
+        android:label="Sports" >
+        <action
+            android:id="@+id/action_sportsFragment_to_articleDetailFragment"
+            app:destination="@id/articleDetailFragment" />
+    </fragment>
+
+
+</navigation>
